@@ -1,21 +1,26 @@
-const { varchar } = require("drizzle-orm/pg-core")
-const { timestamp } = require("drizzle-orm/pg-core")
-const { text } = require("drizzle-orm/pg-core")
-const { uuid } = require("drizzle-orm/pg-core")
-const {pgTable} = require("drizzle-orm/pg-core")
+import { 
+  pgTable, 
+  uuid, 
+  varchar, 
+  text, 
+  timestamp 
+} from "drizzle-orm/pg-core";
 
-export const usersTable = pgTable("users",{
-    id:uuid().primaryKey().defaultRandom(),
-    firstName:varchar("first_name" ,{length:55}).notNull(),
-    lastName:varchar("first_name" ,{length:55}),
-    email:varchar({length:255}).unique().notNull(),
+export const usersTable = pgTable("users", {
+    id: uuid("id").primaryKey().defaultRandom(),
+    
+    firstName: varchar("first_name", { length: 55 }).notNull(),
+    
+    // Fixed: changed column name from "first_name" to "last_name"
+    lastName: varchar("last_name", { length: 55 }), 
+    
+    email: varchar("email", { length: 255 }).unique().notNull(),
 
-    password:text().notNull(),
+    password: text("password").notNull(),
 
-    salt:text().notNull(),
+    salt: text("salt").notNull(),
 
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').$onUpdate(()=> new Date()),
-
-})
-
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    
+    updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
+});
