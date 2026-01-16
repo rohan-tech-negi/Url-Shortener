@@ -1,10 +1,10 @@
 import express from "express";
 import db from "../db/index.js";
 import { usersTable } from "../models/users.model.js";
-import { createHmac, randomBytes } from "crypto";
+
 import { eq } from "drizzle-orm";
 import signupPostRequestBodySchema from "../utils/request.validation.js";
-
+import { hashedPasswordWithSalt } from "../utils/hash.js";
 const router = express.Router();
 
 router.post("/sign-up", async (req, res) => {
@@ -36,10 +36,7 @@ router.post("/sign-up", async (req, res) => {
       });
     }
 
-    const salt = randomBytes(16).toString("hex");
-    const hashedPassword = createHmac("sha256", salt)
-      .update(password)
-      .digest("hex");
+    const {salt, password:hashedPassword } = hashedPasswordWithSalt(password)
 
     const [user] = await db
       .insert(usersTable)
