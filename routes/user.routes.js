@@ -1,6 +1,7 @@
 import express from "express";
 import db from "../db/index.js";
 import { usersTable } from "../models/users.model.js";
+import jwt from "jsonwebtoken"
 
 
 import {signupPostRequestBodySchema, loginPostRequestBodySchema} from "../utils/request.validation.js";
@@ -60,6 +61,28 @@ router.post("/sign-up", async (req, res) => {
 
 router.post("/login", async(req,res)=>{
   const validationPassword = await loginPostRequestBodySchema.safeParseAsync(req.body)
+
+  if(validationPassword.error){
+    res.status(404).json({message:"Validation failed"})
+  }
+
+  const {email, password } = validationPassword.data
+
+  const user = await getUserEmail(email)
+
+  if(!user){
+    res.status(404).json({message: `user with this ${email} does not exist`})
+  }
+
+
+  const {password: hashedPassword} = hashedPasswordWithSalt(
+    password, 
+    user.salt
+  )
+
+  if(user.password !== hashedPassword){
+    return res.status(400).json({error: "invalid password"})
+  }
 })
 
 export default router;
