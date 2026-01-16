@@ -2,9 +2,10 @@ import express from "express";
 import db from "../db/index.js";
 import { usersTable } from "../models/users.model.js";
 
-import { eq } from "drizzle-orm";
-import signupPostRequestBodySchema from "../utils/request.validation.js";
+
+import {signupPostRequestBodySchema, loginPostRequestBodySchema} from "../utils/request.validation.js";
 import { hashedPasswordWithSalt } from "../utils/hash.js";
+import { getUserEmail } from "../services/user.service.js";
 const router = express.Router();
 
 router.post("/sign-up", async (req, res) => {
@@ -25,16 +26,13 @@ router.post("/sign-up", async (req, res) => {
       password,
     } = validationResult.data;
 
-    const [existingUser] = await db
-      .select({ id: usersTable.id })
-      .from(usersTable)
-      .where(eq(usersTable.email, email));
+    const existingUser = await  getUserEmail(email)
 
     if (existingUser) {
-      return res.status(409).json({
-        message: "User already exists",
-      });
-    }
+          return res.status(409).json({
+            message: "User already exists",
+          });
+        }
 
     const {salt, password:hashedPassword } = hashedPasswordWithSalt(password)
 
@@ -59,5 +57,9 @@ router.post("/sign-up", async (req, res) => {
     });
   }
 });
+
+router.post("/login", async(req,res)=>{
+  const validationPassword = await loginPostRequestBodySchema.safeParseAsync(req.body)
+})
 
 export default router;
