@@ -83,6 +83,10 @@ router.post("/login", async(req,res)=>{
   if(user.password !== hashedPassword){
     return res.status(400).json({error: "invalid password"})
   }
+
+  const token = jwt.sign({id: user.id}, process.env.JWT_SECRET)
+
+  return res.json({token})
 })
 
 export default router;
