@@ -1,10 +1,10 @@
-import {z} from "zod";
+import { z } from "zod";
 
 const signupPostRequestBodySchema = z.object({
-    firstname: z.string(),
-    lastname: z.string().optional(),
-    email: z.string().email(),
-    password: z.string().min(3)
-})
+  firstname: z.string().min(1).trim(),
+  lastname: z.string().trim().optional(),
+  email: z.string().email().trim(),
+  password: z.string().min(6),
+});
 
-export default signupPostRequestBodySchema
+export default signupPostRequestBodySchema;

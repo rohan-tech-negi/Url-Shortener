@@ -1,49 +1,66 @@
 import express from "express";
-import db from "../db/index.js"
+import db from "../db/index.js";
 import { usersTable } from "../models/users.model.js";
 import { createHmac, randomBytes } from "crypto";
-import { eq } from "drizzle-orm"; // Ensure you import 'eq'
+import { eq } from "drizzle-orm";
 import signupPostRequestBodySchema from "../utils/request.validation.js";
 
 const router = express.Router();
 
 router.post("/sign-up", async (req, res) => {
-    // 1. Fix: Use req.body (not res.body)
-    const validationResult = await signupPostRequestBodySchema.safeParseAsync(req.body);
-    
+  try {
+    const validationResult =
+      await signupPostRequestBodySchema.safeParseAsync(req.body);
+
     if (!validationResult.success) {
-        return res.status(400).json({ error: validationResult.error.format() });
+      return res.status(400).json({
+        error: validationResult.error.flatten(),
+      });
     }
 
-    const { firstname, lastname, email, password } = validationResult.data;
+    const {
+      firstname: firstName,
+      lastname: lastName,
+      email,
+      password,
+    } = validationResult.data;
 
-    // 2. Fix: Corrected Drizzle query syntax
-    const [existingUser] = await db.select({
-        id: usersTable.id
-    })
-    .from(usersTable) // Fix: Select from the table, not the variable existingUser
-    .where(eq(usersTable.email, email));
+    const [existingUser] = await db
+      .select({ id: usersTable.id })
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
 
-    // 3. Logic: This MUST be inside the async function
     if (existingUser) {
-        return res.status(400).json({ message: `user with this ${email} already existed` });
+      return res.status(409).json({
+        message: "User already exists",
+      });
     }
 
-    // --- Salting Logic ---
-    const salt = randomBytes(16).toString('hex'); // 16-32 bytes is usually plenty
-    const hashedPassword = createHmac('sha256', salt)
-        .update(password)
-        .digest('hex');
+    const salt = randomBytes(16).toString("hex");
+    const hashedPassword = createHmac("sha256", salt)
+      .update(password)
+      .digest("hex");
 
-    const [user] = await db.insert(usersTable).values({
+    const [user] = await db
+      .insert(usersTable)
+      .values({
+        firstName,
+        lastName,
         email,
-        lastname,
-        firstname,
+        password: hashedPassword,
         salt,
-        password: hashedPassword
-    }).returning({ id: usersTable.id });
+      })
+      .returning({ id: usersTable.id });
 
-    return res.status(200).json({ data: { userId: user.id } });
-}); // <-- This closing brace must be here
+    return res.status(201).json({
+      userId: user.id,
+    });
+  } catch (err) {
+    console.error("Signup error:", err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
 
 export default router;
