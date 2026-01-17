@@ -7,6 +7,8 @@
  * @returns 
  */
 
+import { validationUserToken } from "../utils/token";
+
 
 
 function authenticationMiddleware(req,res,next){
@@ -19,4 +21,9 @@ function authenticationMiddleware(req,res,next){
         return res.status(400).json({error:'Authorization header must start with this '})
 
     const [_, token] = authHeader.split(' ');
+
+    const payload = validationUserToken(token)
+
+    req.user = payload;
+    next()
 }
