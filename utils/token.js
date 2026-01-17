@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken"
-import { userToken } from "./token.validation";
+import { userToken } from "./token.validation.js";
 
 const JWT_SECRET = process.env.JWT_SECRET
 
