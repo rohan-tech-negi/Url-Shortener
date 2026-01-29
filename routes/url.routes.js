@@ -9,7 +9,7 @@ import { nanoid } from "nanoid";
 const router = express.Router()
 
 router.post("/shorten" , async function (req,res) {
-    const userId = req.user.id;
+    const userId = req.user?.id;
 
 
     if(!userId)

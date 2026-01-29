@@ -9,23 +9,29 @@
 
 import { validationUserToken } from "../utils/token.js";
 
+function authenticationMiddleware(req, res, next) {
+  const authHeader = req.get("authorization"); // ✅ FIXED
 
+  if (!authHeader) {
+    return next();
+  }
 
-function authenticationMiddleware(req,res,next){
-    const authHeader = req.headers('authorization');
+  if (!authHeader.startsWith("Bearer ")) {
+    return res
+      .status(400)
+      .json({ error: "Authorization header must start with Bearer" });
+  }
 
-    if(!authHeader){
-        return next()
-    }
-    if(!authHeader.startsWith('Bearer'))
-        return res.status(400).json({error:'Authorization header must start with this '})
+  const token = authHeader.split(" ")[1];
 
-    const [_, token] = authHeader.split(' ');
-
-    const payload = validationUserToken(token)
+  try {
+    const payload = validationUserToken(token);
 
     req.user = payload;
-    next()
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Invalid or expired token" });
+  }
 }
 
-export default authenticationMiddleware
+export default authenticationMiddleware;
