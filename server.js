@@ -1,7 +1,8 @@
 import express from "express";
 import userRouter from "./routes/user.routes.js"
 // import {a} from "./middlewares/auth.middleware.js"
-import {authenticationMiddleware} from "./middlewares/auth.middleware.js"
+// import {authenticationMiddleware} from "./middlewares/auth.middleware.js"
+import authenticationMiddleware from "./middlewares/auth.middleware.js";
 const app = express()
 const port = process.env.PORT || 4000;
 
