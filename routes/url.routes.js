@@ -1,8 +1,8 @@
 import express from "express"
 // import { Router } from "express";
-import { shortenPostRequestBodySchema } from "../utils/request.validation";
+import { shortenPostRequestBodySchema } from "../utils/request.validation.js";
 // import { error } from "console";
-import {db} from "../db/index.js"
+import db from "../db/index.js"
 import {urlsTable} from "../models/index.js"
 import { nanoid } from "nanoid";
 
