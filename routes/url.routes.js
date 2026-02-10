@@ -23,17 +23,18 @@ console.log(req.body);
         return res.status(400).json({error: validationResult.error})
     }
 
-    const {url, code} = validationResult.data;
+    const { url, shortCode } = validationResult.data;
+const finalShortCode = shortCode ?? nanoid(6);
 
-    const shortCode = code ?? nanoid(6);
 
     const [result] = await db
   .insert(urlsTable)
   .values({
-    shortCode,
-    targetURL: url,
-    userId: req.user.id,
-  })
+  shortCode: finalShortCode,
+  targetURL: url,
+  userId: req.user.id,
+})
+
   .returning({
     id: urlsTable.id,
     shortCode: urlsTable.shortCode,
