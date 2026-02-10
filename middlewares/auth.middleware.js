@@ -10,10 +10,10 @@
 import { validationUserToken } from "../utils/token.js";
 
 function authenticationMiddleware(req, res, next) {
-  const authHeader = req.get("authorization"); // ✅ FIXED
+  const authHeader = req.get("authorization");
 
   if (!authHeader) {
-    return next();
+    return res.status(401).json({ error: "Authorization header missing" });
   }
 
   if (!authHeader.startsWith("Bearer ")) {
@@ -27,7 +27,7 @@ function authenticationMiddleware(req, res, next) {
   try {
     const payload = validationUserToken(token);
 
-    req.user = payload;
+    req.user = payload; // MUST contain id
     next();
   } catch (err) {
     return res.status(401).json({ error: "Invalid or expired token" });
