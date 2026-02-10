@@ -17,3 +17,7 @@ export async function getUserEmail(email) {
     
         return existingUser;
 }
+
+export async function getUrlresult(params) {
+  
+}

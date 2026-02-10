@@ -9,6 +9,11 @@ import { ensureAuthenticated } from "../middlewares/auth.middleware.js";
 
 const router = express.Router()
 
+router.get('/:shortCode', async function (req,res) {
+  const code = req.params.shortCode
+  await db.select.from()
+})
+
 router.post("/shorten" ,ensureAuthenticated,  async function (req,res) {
     
 
