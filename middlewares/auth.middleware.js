@@ -26,6 +26,7 @@ function authenticationMiddleware(req, res, next) {
 
   try {
     const payload = validationUserToken(token);
+    
 
     req.user = payload; // MUST contain id
     next();
