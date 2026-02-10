@@ -5,17 +5,12 @@ import { shortenPostRequestBodySchema } from "../utils/request.validation.js";
 import db from "../db/index.js"
 import {urlsTable} from "../models/index.js"
 import { nanoid } from "nanoid";
+import { ensureAuthenticated } from "../middlewares/auth.middleware.js";
 
 const router = express.Router()
 
-router.post("/shorten" , async function (req,res) {
-    const userId = req.user?.id;
+router.post("/shorten" ,ensureAuthenticated,  async function (req,res) {
     
-
-
-
-    if(!userId)
-        return res.status(401).json({error: "You must be logged in to access this resoure"})
 
     const validationResult = await shortenPostRequestBodySchema.safeParseAsync(req.body);
 console.log(req.body);
