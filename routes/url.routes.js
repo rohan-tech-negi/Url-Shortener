@@ -55,6 +55,10 @@ router.get("/codes", ensureAuthenticated, async (req, res) => {
 });
 
 
+router.delete('/:id', ensureAuthenticated, async function (req,res) {
+    
+})
+
 router.get('/:shortCode', async function (req,res) {
   const code = req.params.shortCode
   const [result] = await db.select({
