@@ -58,7 +58,7 @@ router.get("/codes", ensureAuthenticated, async (req, res) => {
 router.delete('/:id', ensureAuthenticated, async function (req,res) {
     const id = req.params.id;
     await db.delete(urlsTable).where(and(eq(urlsTable.id, id), eq(urlsTable.userId, req,user.id)))
-
+  
     return res.status(200).json({deleted: true})
 })
 
