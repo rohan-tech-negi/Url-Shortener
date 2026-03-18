@@ -25,7 +25,7 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Nav Links */}
-        <div className="hidden md:flex items-center gap-8">
+        {/* <div className="hidden md:flex items-center gap-8">
           {['Features', 'Pricing', 'Docs', 'About'].map(link => (
             <a
               key={link}
@@ -36,16 +36,16 @@ export default function Navbar() {
               <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-indigo-500 rounded-full group-hover:w-full transition-all duration-300" />
             </a>
           ))}
-        </div>
+        </div> */}
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <a
+          {/* <a
             href="#login"
             className="text-sm font-semibold text-gray-700 hover:text-indigo-600 transition-colors duration-200 px-4 py-2"
           >
             Login
-          </a>
+          </a> */}
           <a
             href="#get-started"
             className="btn-primary bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
